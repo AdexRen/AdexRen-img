@@ -51,7 +51,7 @@
       color: #fca5a5;
       margin-bottom: 8px;
     }
-    input[type="file"], select, input[type="color"] {
+    input[type="file"], select {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
@@ -63,16 +63,6 @@
     }
     input[type="file"]:focus, select:focus {
       border-color: #ef4444;
-    }
-    .color-picker-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    input[type="color"] {
-      height: 45px;
-      padding: 4px;
-      cursor: pointer;
     }
     button {
       width: 100%;
@@ -90,10 +80,6 @@
     button:hover {
       background-color: #b91c1c;
     }
-    button:disabled {
-      background-color: #475569;
-      cursor: not-allowed;
-    }
   </style>
 </head>
 <body>
@@ -110,17 +96,10 @@
     <div class="input-group">
       <label for="formatSelect">Convertir a:</label>
       <select id="formatSelect">
-        <option value="jpeg">JPG / JPEG</option>
+        <option value="jpg">JPG</option>
         <option value="png">PNG</option>
         <option value="webp">WEBP</option>
       </select>
-    </div>
-
-    <div class="input-group" id="bgColorGroup">
-      <label for="bgColor">Color de fondo (para transparencias):</label>
-      <div class="color-picker-container">
-        <input type="color" id="bgColor" value="#ffffff">
-      </div>
     </div>
 
     <button id="convertBtn">Convertir y Descargar</button>
@@ -131,19 +110,9 @@
   <script>
     const imageInput = document.getElementById('imageInput');
     const formatSelect = document.getElementById('formatSelect');
-    const bgColorGroup = document.getElementById('bgColorGroup');
-    const bgColorInput = document.getElementById('bgColor');
     const convertBtn = document.getElementById('convertBtn');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-
-    formatSelect.addEventListener('change', () => {
-      if (formatSelect.value === 'jpeg') {
-        bgColorGroup.style.display = 'block';
-      } else {
-        bgColorGroup.style.display = 'none';
-      }
-    });
 
     convertBtn.addEventListener('click', () => {
       const file = imageInput.files[0];
@@ -161,8 +130,8 @@
 
           const targetFormat = formatSelect.value;
 
-          if (targetFormat === 'jpeg') {
-            ctx.fillStyle = bgColorInput.value;
+          if (targetFormat === 'jpg') {
+            ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
           } else {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -170,12 +139,13 @@
 
           ctx.drawImage(img, 0, 0);
 
-          const mimeType = `image/${targetFormat}`;
+          const mimeFormat = targetFormat === 'jpg' ? 'jpeg' : targetFormat;
+          const mimeType = `image/${mimeFormat}`;
           const dataUrl = canvas.toDataURL(mimeType, 0.92);
 
           const link = document.createElement('a');
           const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || 'imagen';
-          link.download = `${originalName}_adexren.${targetFormat === 'jpeg' ? 'jpg' : targetFormat}`;
+          link.download = `${originalName}_adexren.${targetFormat}`;
           link.href = dataUrl;
           link.click();
         };
