@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdexRen Image Converter</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background-color: #1e293b;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      border: 1px solid #334155;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+      color: #ef4444;
+    }
+    p.subtitle {
+      font-size: 0.95rem;
+      color: #f87171;
+      margin-bottom: 25px;
+    }
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      margin-bottom: 8px;
+    }
+    input[type="file"], select, input[type="color"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background-color: #0f172a;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    input[type="file"]:focus, select:focus {
+      border-color: #ef4444;
+    }
+    .color-picker-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    input[type="color"] {
+      height: 45px;
+      padding: 4px;
+      cursor: pointer;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #b91c1c;
+    }
+    button:disabled {
+      background-color: #475569;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>AdexRen</h1>
+    <p class="subtitle">Image Converter</p>
+
+    <div class="input-group">
+      <label for="imageInput">Selecciona una imagen:</label>
+      <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp">
+    </div>
+
+    <div class="input-group">
+      <label for="formatSelect">Convertir a:</label>
+      <select id="formatSelect">
+        <option value="jpeg">JPG / JPEG</option>
+        <option value="png">PNG</option>
+        <option value="webp">WEBP</option>
+      </select>
+    </div>
+
+    <div class="input-group" id="bgColorGroup">
+      <label for="bgColor">Color de fondo (para transparencias):</label>
+      <div class="color-picker-container">
+        <input type="color" id="bgColor" value="#ffffff">
+      </div>
+    </div>
+
+    <button id="convertBtn">Convertir y Descargar</button>
+  </div>
+
+  <canvas id="canvas" style="display: none;"></canvas>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const formatSelect = document.getElementById('formatSelect');
+    const bgColorGroup = document.getElementById('bgColorGroup');
+    const bgColorInput = document.getElementById('bgColor');
+    const convertBtn = document.getElementById('convertBtn');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    formatSelect.addEventListener('change', () => {
+      if (formatSelect.value === 'jpeg') {
+        bgColorGroup.style.display = 'block';
+      } else {
+        bgColorGroup.style.display = 'none';
+      }
+    });
+
+    convertBtn.addEventListener('click', () => {
+      const file = imageInput.files[0];
+      if (!file) {
+        alert('Por favor, selecciona una imagen primero.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          const targetFormat = formatSelect.value;
+
+          if (targetFormat === 'jpeg') {
+            ctx.fillStyle = bgColorInput.value;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+
+          ctx.drawImage(img, 0, 0);
+
+          const mimeType = `image/${targetFormat}`;
+          const dataUrl = canvas.toDataURL(mimeType, 0.92);
+
+          const link = document.createElement('a');
+          const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || 'imagen';
+          link.download = `${originalName}_adexren.${targetFormat === 'jpeg' ? 'jpg' : targetFormat}`;
+          link.href = dataUrl;
+          link.click();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+
+</body>
+</html>
