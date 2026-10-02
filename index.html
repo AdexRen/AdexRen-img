@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdexRen — Convertidor de Imágenes</title>
+  <!-- Vinculación del archivo CSS externo -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1 class="brand-title">AdexRen<span class="red-dot">.</span></h1>
+      <span class="subtitle-badge" id="subTitleText">Convertidor de Imágenes</span>
+    </div>
+
+    <div class="input-group">
+      <span class="label-title" id="labelSelect">Selecciona tu(s) imagen(es):</span>
+      
+      <div class="drop-zone" id="dropZone">
+        <svg class="drop-zone-icon" viewBox="0 0 24 24">
+          <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+        </svg>
+        <div class="drop-zone-text" id="dropZoneText">Toca para seleccionar imágenes</div>
+        <div class="drop-zone-hint">Soporta PNG, JPG, WEBP, GIF, AVIF, BMP, ICO</div>
+        <input type="file" id="imageInput" multiple accept="image/*">
+      </div>
+    </div>
+
+    <div class="preview-container" id="previewContainer">
+      <div class="preview-header">
+        <span class="preview-title" id="labelPreview">Vista previa:</span>
+        <button type="button" class="remove-all-btn" id="removeAllBtn">Quitar todas</button>
+      </div>
+      <div class="preview-list" id="previewList"></div>
+    </div>
+
+    <div class="input-group">
+      <span class="label-title" id="labelFormat">Convertir a:</span>
+      <select id="formatSelect">
+        <option value="png">PNG</option>
+        <option value="webp">WEBP</option>
+        <option value="jpeg">JPG / JPEG</option>
+        <option value="avif">AVIF</option>
+        <option value="gif">GIF</option>
+        <option value="bmp">BMP</option>
+        <option value="x-icon">ICO (Icono)</option>
+      </select>
+    </div>
+
+    <div class="input-group" id="bgColorGroup">
+      <div class="switch-container">
+        <span class="switch-label" id="labelFillBg">Reemplazar transparencia con color</span>
+        <label class="switch">
+          <input type="checkbox" id="fillBgCheckbox">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="color-picker-box" id="colorPickerBox" style="display: none;">
+        <span class="label-title" id="labelBgColor" style="margin-bottom: 0;">Color de fondo:</span>
+        <input type="color" id="bgColor" value="#ffffff">
+      </div>
+    </div>
+
+    <button id="convertBtn">Convertir Imagen</button>
+
+    <!-- Lista de descargas para Android/PC -->
+    <div class="results-container" id="resultsContainer">
+      <div class="preview-header">
+        <span class="preview-title" style="color: #4ade80;">Imágenes Convertidas:</span>
+      </div>
+      <div class="results-list" id="resultsList"></div>
+    </div>
+
+  </div>
+
+  <canvas id="canvas" style="display: none;"></canvas>
+
+  <!-- Vinculación del archivo JavaScript externo -->
+  <script src="script.js"></script>
+</body>
+</html>
